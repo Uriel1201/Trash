@@ -1,6 +1,7 @@
 module MySQLite
 
 using SQLite, Arrow, DBInterface, Tables, DataFrames
+using ..Schemas
 
 
 """
