@@ -89,8 +89,6 @@ function my_tables(conn::SQLite.DB)::Vector{String}
     return [t.name for t in list_tables]
 end # my_tables
 
-end # module MySQLite
-
 
 """
 """
