@@ -16,4 +16,16 @@ function csv_types(nombre_tabla::String)
     return Dict(zip(schema.names, schema.types))
 end
 
+
+function csv_path(csv::String)::Union{Vector{String}, String}
+    dir = joinpath(@__DIR__, "data", "csv", csv)
+    if isdir(dir)
+        return joinpath.(dir, filter(f -> endswith(f, ".csv"), readdir(dir)))
+    elseif isfile(dir)
+        return dir
+    else
+        throw(ArgumentError("$csv is invalid"))
+    end
+end
+
 end # module Schemas
