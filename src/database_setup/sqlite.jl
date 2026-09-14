@@ -89,3 +89,16 @@ function my_tables(conn::SQLite.DB)::Vector{String}
 end # my_tables
 
 end # module MySQLite
+
+
+function csv_path(csv::String)::Union{Vector{String}, String}
+    dir = joinpath(@__DIR__, "data", "csv", csv)
+    if isdir(dir)
+        return joinpath.(dir, filter(f -> endswith(f, ".csv"), readdir(dir)))
+    elseif isfile(dir)
+        return dir
+    else
+        throw(ArgumentError("$csv is invalid"))
+    end
+end
+end # module MySQLite
