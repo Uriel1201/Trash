@@ -91,14 +91,15 @@ end # my_tables
 end # module MySQLite
 
 
-function csv_path(csv::String)::Union{Vector{String}, String}
-    dir = joinpath(@__DIR__, "data", "csv", csv)
-    if isdir(dir)
-        return joinpath.(dir, filter(f -> endswith(f, ".csv"), readdir(dir)))
-    elseif isfile(dir)
-        return dir
-    else
-        throw(ArgumentError("$csv is invalid"))
-    end
+"""
+"""
+function insert_query(table::String)::String
+    schema = Schemas.SCHEMAS[table]
+    num_columns = length(schema.names)
+
+    columns = "(" * join([String(v) for v in schema.names], ", ") * ")"
+    values = " VALUES (" * join(["?" for _ in schema.names], ", ") * ")"
+    return "INSERT INTO " * "$table " * columns * values
 end
+
 end # module MySQLite
