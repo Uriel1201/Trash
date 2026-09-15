@@ -18,7 +18,7 @@ end
 
 
 function csv_path(csv::String)::Union{Vector{String}, String}
-    dir = joinpath(@__DIR__, "data", "csv", csv)
+    dir = joinpath(@__DIR__, "..", "..", "data", "csv", csv)
     if isdir(dir)
         return joinpath.(dir, filter(f -> endswith(f, ".csv"), readdir(dir)))
     elseif isfile(dir)
