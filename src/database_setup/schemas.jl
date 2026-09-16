@@ -16,7 +16,7 @@ const TABLE_03 = Tables.Schema(
 )
 const TABLE_04 = Tables.Schema(
     (:id, :action, :action_date),
-    (Int64, Union(String, Missing), Union(String, Missing)),
+    (Int64, Union{String, Missing}, Union{String, Missing}),
 )
 const TABLE_05 = Tables.Schema(
     (:user_id, :product_id, :transaction_date),
