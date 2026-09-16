@@ -1,6 +1,6 @@
 module MySQLite
 
-using SQLite, Arrow, DBInterface, Tables, DataFrames
+using SQLite, Arrow, DBInterface, Tables, DataFrames, CSV
 using ..Schemas
 
 
@@ -29,15 +29,10 @@ end #get_conn
     sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)
 """
 function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)::Nothing
-
     file_path = joinpath("data/arrow", "$output_file.arrow")
-
     result = DBInterface.execute(conn, query)
-
     open(Arrow.Writer, file_path) do writer
-
         batch = NamedTuple[]
-
         for row in result
             push!(batch, NamedTuple(row))
 
@@ -54,9 +49,25 @@ function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)::N
             Arrow.write(writer, table)
         end
     end
-
     nothing
 end #sqlite_to_arrow
+
+
+"""
+    csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows) -> Nothing 
+"""
+function csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
+    if (table in dbs.my_tables(conn))
+        insert = dbs.insert_query(table)
+        stmt = SQLite.Stmt(conn, insert)
+        for batch in Iterators.partition(data, 10000)
+            table = Tables.columntable(batch)
+            DBInterface.executemany(stmt, table)
+        end
+    else
+        throw(ArgumentError("$table does not exist"))
+    end
+end # csv_to_sqlite
 
 
 """
@@ -91,6 +102,7 @@ end # my_tables
 
 
 """
+    insert_query(table::String) -> String
 """
 function insert_query(table::String)::String
     schema = Schemas.SCHEMAS[table]
@@ -99,6 +111,6 @@ function insert_query(table::String)::String
     columns = "(" * join([String(v) for v in schema.names], ", ") * ")"
     values = " VALUES (" * join(["?" for _ in schema.names], ", ") * ")"
     return "INSERT INTO " * "$table " * columns * values
-end
+end # insert_query
 
 end # module MySQLite
