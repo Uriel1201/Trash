@@ -57,11 +57,17 @@ end # testset
 end # testset
 
 
+@testset "MySQLite.insert_query" begin
+    insert_query = dbs.insert_query("family", schema)
+    @test insert_query == "INSERT INTO family (id, animal, name) VALUES (?, ?, ?)"
+end # testset
+
+
 @testset "MySQLite.csv_to_sqlite" begin
     dbs.get_conn() do conn
         SQLite.createtable!(conn, "family", schema, temp = false)
         @test ("family" in dbs.my_tables(conn))
-        dbs.csv_to_sqlite(conn, "family", data)
+        dbs.csv_to_sqlite(conn, "family", schema, data)
         df = dbs.sqlite_sample(conn, "SELECT * FROM family")
         @test df.name == ["Margarita", "Michi", "Pantaleon"]
     end
