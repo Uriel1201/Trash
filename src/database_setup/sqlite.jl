@@ -67,6 +67,7 @@ function csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
     else
         throw(ArgumentError("$table does not exist"))
     end
+    nothing 
 end # csv_to_sqlite
 
 
