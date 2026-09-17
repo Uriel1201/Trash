@@ -63,6 +63,6 @@ end # testset
         @test ("family" in dbs.my_tables(conn))
         dbs.csv_to_sqlite(conn, "family", data)
         df = dbs.sqlite_sample(conn, "SELECT * FROM family")
-        @test df.name = ["Margarita", "Michi", "Pantaleon"]
+        @test df.name == ["Margarita", "Michi", "Pantaleon"]
     end
 end
