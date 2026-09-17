@@ -44,7 +44,7 @@ end
 
 
 """
-    csv_types(table::String)
+    my_data_types(table::String)
 """
 function my_data_types(table::String)::Dict{Symbol, Type}
     if isempty(SCHEMAS)
