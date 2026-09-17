@@ -54,11 +54,11 @@ end #sqlite_to_arrow
 
 
 """
-    csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows) -> Nothing 
+    csv_to_sqlite(conn::SQLite.DB, table::String, schema::Tables.Schema, data::CSV.Rows) -> Nothing 
 """
 function csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
     if (table in my_tables(conn))
-        insert = insert_query(table)
+        insert = insert_query(table, schema)
         stmt = SQLite.Stmt(conn, insert)
         for batch in Iterators.partition(data, 10000)
             table = Tables.columntable(batch)
@@ -104,7 +104,7 @@ end # my_tables
 """
     insert_query(table::String) -> String
 """
-function insert_query(schema::Tables.Schema)::String
+function insert_query(table::String, schema::Tables.Schema)::String
     num_columns = length(schema.names)
     columns = "(" * join([String(v) for v in schema.names], ", ") * ")"
     values = " VALUES (" * join(["?" for _ in schema.names], ", ") * ")"
