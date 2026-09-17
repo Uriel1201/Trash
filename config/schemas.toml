@@ -1,0 +1,24 @@
+[users_01]
+user_id = "Int64"
+action = "Union{String, Missing}"
+action_date = "Union{DateTime, Missing}"
+
+[transactions_02]
+sender = "Int64"
+receiver = "Union{Int64, Missing}"
+amount = "Union{Float64, Missing}"
+transaction_date = "Union{DateTime, Missing}"
+
+[items_03]
+date = "String"
+item = "Union{String, Missing}"
+
+[users_04]
+id = "Int64"
+action = "Union{String, Missing}"
+action_date = "Union{String, Missing}"
+
+[users_05]
+user_id = "Int64"
+product_id = "Union{Int64, Missing}"
+transaction_date = "Union{String, Missing}"
