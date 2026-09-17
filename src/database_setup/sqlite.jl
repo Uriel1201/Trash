@@ -22,7 +22,7 @@ function get_conn(f::Function, db_path::String = ":memory:", mode::String = "rw"
     finally
         SQLite.close(db)
     end
-end #get_conn
+end # get_conn
 
 
 """
@@ -54,11 +54,11 @@ end #sqlite_to_arrow
 
 
 """
-    csv_to_sqlite(conn::SQLite.DB, table::String, schema::Tables.Schema, data::CSV.Rows) -> Nothing 
+    csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows) -> Nothing 
 """
-function csv_to_sqlite(conn::SQLite.DB, table::String, schema::Tables.Schema, data::CSV.Rows)::Nothing
+function csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
     if (table in my_tables(conn))
-        insert = insert_query(table, schema)
+        insert = insert_query(table)
         stmt = SQLite.Stmt(conn, insert)
         for batch in Iterators.partition(data, 10000)
             table = Tables.columntable(batch)
@@ -106,7 +106,7 @@ end # my_tables
     insert_query(table::String) -> String
 """
 function insert_query(table::String)::String
-    schema = my_data_types(table)
+    schema = Schemas.my_data_types(table)
     num_columns = length(schema)
     for k in keys(schema)
         columns = join(String(k), ", ")
