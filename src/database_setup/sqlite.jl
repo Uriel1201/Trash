@@ -108,11 +108,9 @@ end # my_tables
 function insert_query(table::String)::String
     schema = Schemas.my_data_types(table)
     num_columns = length(schema)
-    for k in keys(schema)
-        columns = join(String(k), ", ")
-        values = join("?", ", ")
-    end 
-    return "INSERT INTO " * "$table " * "(" * $columns * ")" * " VALUES (" * $values * ")"
+    columns = join(keys(schema), ", ")
+    values = join(fill("?", length(schema)), ", ")
+    return "INSERT INTO $table ($columns) VALUES ($values)"
 end # insert_query
 
 end # module MySQLite
