@@ -56,7 +56,7 @@ end #sqlite_to_arrow
 """
     csv_to_sqlite(conn::SQLite.DB, table::String, schema::Tables.Schema, data::CSV.Rows) -> Nothing 
 """
-function csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
+function csv_to_sqlite(conn::SQLite.DB, table::String, schema::Tables.Schema, data::CSV.Rows)::Nothing
     if (table in my_tables(conn))
         insert = insert_query(table, schema)
         stmt = SQLite.Stmt(conn, insert)
