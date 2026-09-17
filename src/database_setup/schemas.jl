@@ -3,7 +3,7 @@ module Schemas
 using TOML
 using Dates
 
-export SCHEMAS, csv_types, load_schemas!
+export SCHEMAS, my_data_types, load_schemas!
 
 const SCHEMAS = Dict{String, Dict{Symbol, Type}}()
 
@@ -46,7 +46,7 @@ end
 """
     csv_types(table::String)
 """
-function csv_types(table::String)::Dict{Symbol, Type}
+function my_data_types(table::String)::Dict{Symbol, Type}
     if isempty(SCHEMAS)
         error("SCHEMAS dont loaded. Call 'Schemas.load_schemas!(path)' first.")
     end
