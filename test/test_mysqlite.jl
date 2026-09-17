@@ -1,15 +1,17 @@
 using Test
 using DBInterface, SQLite, Arrow, Tables, DataFrames, CSV
 using hello_data_in_julia
+using DatabaseSetup.Schemas
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 
 sql = "SELECT * FROM t"
-schema = Tables.Schema((:id, :animal, :name), (Int32, String, String))
-data = CSV.Rows(IOBuffer("id,animal,name
-1,dog,Margarita
-2,cat,Michi
-3,bird,Pantaleon"); header=1, types=[Int32,String,String])
-
+schema = SCHEMAS["family"]
+#=
+data = CSV.Rows(IOBuffer("alias,animal,birthday
+Margarita,dog,11-Jan-2018
+Uriel,human,12-Dic-1993
+Angel,human,06-Jan-2007"); header=1, types=[Int32,String,String])
+=#
 
 @testset "MySQLite.get_conn" begin
     dbs.get_conn() do conn
