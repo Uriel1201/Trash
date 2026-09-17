@@ -8,7 +8,7 @@ const TABLE_01 = Tables.Schema(
 )
 const TABLE_02 = Tables.Schema(
     (:sender, :receiver, :amount, :transaction_date),
-    (:Int64, Union{Int64, Missing}, Union{Float64, Missing}, Union{String, Missing}),
+    (Int64, Union{Int64, Missing}, Union{Float64, Missing}, Union{String, Missing}),
 )
 const TABLE_03 = Tables.Schema(
     (:date, :item),
