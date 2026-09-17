@@ -1,13 +1,13 @@
 [users_01]
 user_id = "Int64"
 action = "Union{String, Missing}"
-action_date = "Union{DateTime, Missing}"
+action_date = "Union{String, Missing}"
 
 [transactions_02]
 sender = "Int64"
 receiver = "Union{Int64, Missing}"
 amount = "Union{Float64, Missing}"
-transaction_date = "Union{DateTime, Missing}"
+transaction_date = "Union{String, Missing}"
 
 [items_03]
 date = "String"
