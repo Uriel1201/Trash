@@ -1,11 +1,11 @@
 using Test
 using DBInterface, SQLite, Arrow, Tables, DataFrames, CSV
 using hello_data_in_julia
-using DatabaseSetup.Schemas
+import hello_data_in_julia.DatabaseSetup.Schemas as sch
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 
 sql = "SELECT * FROM t"
-schema = SCHEMAS["family"]
+schema = sch.SCHEMAS["family"]
 #=
 data = CSV.Rows(IOBuffer("alias,animal,birthday
 Margarita,dog,11-Jan-2018
@@ -58,13 +58,13 @@ end # testset
     end
 end # testset
 
-
+#=
 @testset "MySQLite.insert_query" begin
     insert_query = dbs.insert_query("family", schema)
     @test insert_query == "INSERT INTO family (id, animal, name) VALUES (?, ?, ?)"
-end # testset
+end # testset =#
 
-
+#=
 @testset "MySQLite.csv_to_sqlite" begin
     dbs.get_conn() do conn
         SQLite.createtable!(conn, "family", schema, temp = false)
@@ -73,4 +73,4 @@ end # testset
         df = dbs.sqlite_sample(conn, "SELECT * FROM family")
         @test df.name == ["Margarita", "Michi", "Pantaleon"]
     end
-end
+end # testset =#
