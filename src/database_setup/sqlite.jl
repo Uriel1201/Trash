@@ -104,10 +104,8 @@ end # my_tables
 """
     insert_query(table::String) -> String
 """
-function insert_query(table::String)::String
-    schema = Schemas.SCHEMAS[table]
+function insert_query(schema::Tables.Schema)::String
     num_columns = length(schema.names)
-
     columns = "(" * join([String(v) for v in schema.names], ", ") * ")"
     values = " VALUES (" * join(["?" for _ in schema.names], ", ") * ")"
     return "INSERT INTO " * "$table " * columns * values
