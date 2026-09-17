@@ -112,7 +112,7 @@ function insert_query(table::String)::String
         columns = join(String(k), ", ")
         values = join("?", ", ")
     end 
-    return "INSERT INTO " * "$table " * "(" * columns * ")" * " VALUES (" * values * ")"
+    return "INSERT INTO " * "$table " * "(" * $columns * ")" * " VALUES (" * $values * ")"
 end # insert_query
 
 end # module MySQLite
