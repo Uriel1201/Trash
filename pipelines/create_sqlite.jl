@@ -2,7 +2,6 @@ using Tables, SQLite
 import hello_data_in_julia.DatabaseSetup.Schemas as sch
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 
-
 const TABLE_LIST = dbs.get_conn("hello_data", "ro") do conn
     dbs.my_tables(conn)
 end
@@ -12,7 +11,7 @@ function users_01(conn::SQLite.DB)::Nothing
     table = "users_01"
     if !(table in dbs.my_tables(conn))
         SQLite.createtable!(conn, table, sch.SCHEMAS[table], temp = false)
-        @info $table created:$schema.names, $schema.types
+        @info $table created: $schema.names, $schema.types
     else
         @info "$table already exists"
     end
