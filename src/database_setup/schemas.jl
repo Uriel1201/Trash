@@ -2,7 +2,7 @@ module Schemas
 
 using TOML
 
-export my_data_types, RAW_TOML
+export my_data_types, SCHEMAS_TOML
 
 schemas_path = joinpath(@__DIR__, "..", "..", "config", "schemas.toml")
 const SCHEMAS_TOML = Dict(table => content["columns"] for (table, content) in TOML.parsefile(schemas_path))
@@ -23,6 +23,9 @@ end
     my_data_types(table::String)
 """
 function my_data_types(table::String)::Vector{Pair{Symbol, Type}}
+    if !haskey(SCHEMAS_TOML, table)
+        error("Table '$table' not found in schemas.toml")
+    end
     return map(SCHEMAS_TOML[table]) do col
         Symbol(col["name"]) => parse_type_string(col["type"])
     end
