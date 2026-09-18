@@ -61,6 +61,6 @@ function __init__()
     if isfile(default_path)
         load_schemas!(default_path)
     end
-end
+end =#
 
-end # module Schemas =#
+end # module Schemas 
