@@ -111,5 +111,6 @@ function insert_query(table::String, col_names::Vector{Symbol})::String
     columns = join(col_names, ", ")
     values = join(fill("?", num_columns), ", ")
     return "INSERT INTO $table ($columns) VALUES ($values)"
-end
+end # insert_query
+
 end # module MySQLite
