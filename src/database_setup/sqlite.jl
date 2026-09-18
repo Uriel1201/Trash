@@ -52,7 +52,7 @@ function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)::N
     nothing
 end #sqlite_to_arrow
 
-
+#=
 """
     csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows) -> Nothing 
 """
@@ -68,7 +68,7 @@ function csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
         throw(ArgumentError("$table does not exist"))
     end
     nothing 
-end # csv_to_sqlite
+end # csv_to_sqlite=#
 
 
 """
@@ -101,7 +101,7 @@ function my_tables(conn::SQLite.DB)::Vector{String}
     return [t.name for t in list_tables]
 end # my_tables
 
-
+#=
 """
     insert_query(table::String) -> String
 """
@@ -111,6 +111,6 @@ function insert_query(table::String)::String
     columns = join(keys(schema), ", ")
     values = join(fill("?", length(schema)), ", ")
     return "INSERT INTO $table ($columns) VALUES ($values)"
-end # insert_query
+end # insert_query =#
 
 end # module MySQLite
