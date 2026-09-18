@@ -1,10 +1,10 @@
 module Schemas
 
-using TOML
+using TOML, OrderedCollections
 
 export SCHEMAS, my_data_types, load_schemas!
 
-const SCHEMAS = Dict{String, Dict{Symbol, Type}}()
+const SCHEMAS = Dict{String, OrderedDict{Symbol, Type}}()
 
 
 """
@@ -31,7 +31,7 @@ function load_schemas!(toml_path::String)
     empty!(SCHEMAS)
 
     for (table, columns) in raw_data
-        table_dict = Dict{Symbol, Type}()
+        table_dict = OrderedDict{Symbol, Type}()
         for (col_name, type_str) in columns
             table_dict[Symbol(col_name)] = parse_type_string(type_str)
         end
