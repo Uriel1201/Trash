@@ -58,11 +58,14 @@ end #sqlite_to_arrow
 """
 function csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
     if (table in my_tables(conn))
-        insert = insert_query(table)
+        schema = Schemas.my_data_types(table)
+        columns = Tuple(keys(schema))
+        insert = insert_query(schema)
         stmt = SQLite.Stmt(conn, insert)
-        for batch in Iterators.partition(data, 10000)
+        for batch in Iterators.partition(data, 2000)
             table = Tables.columntable(batch)
-            DBInterface.executemany(stmt, table)
+            ordered_cols = NamedTuple{columns}(table) 
+            DBInterface.executemany(stmt, ordered_cols)
         end
     else
         throw(ArgumentError("$table does not exist"))
@@ -105,8 +108,7 @@ end # my_tables
 """
     insert_query(table::String) -> String
 """
-function insert_query(table::String)::String
-    schema = Schemas.my_data_types(table)
+function insert_query(schema::Dict{Symbol, Type})::String
     num_columns = length(schema)
     columns = join(keys(schema), ", ")
     values = join(fill("?", length(schema)), ", ")
