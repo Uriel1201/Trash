@@ -52,13 +52,14 @@ function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)::N
     nothing
 end #sqlite_to_arrow
 
-#=
+
 """
     csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows) -> Nothing 
 """
 function csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
     if (table in my_tables(conn))
-        insert = insert_query(table)
+        columns = map(first, Schemas.my_data_types(table))
+        insert = insert_query(table, columns)
         stmt = SQLite.Stmt(conn, insert)
         for batch in Iterators.partition(data, 2000)
             column_table = Tables.columntable(batch)
@@ -68,7 +69,7 @@ function csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
         throw(ArgumentError("$table does not exist"))
     end
     nothing 
-end # csv_to_sqlite=#
+end # csv_to_sqlite
 
 
 """
@@ -101,16 +102,14 @@ function my_tables(conn::SQLite.DB)::Vector{String}
     return [t.name for t in list_tables]
 end # my_tables
 
-#=
+
 """
     insert_query(table::String) -> String
 """
-function insert_query(table::String)::String
-    schema = Schemas.my_data_types(table)
-    num_columns = length(schema)
-    columns = join(keys(schema), ", ")
-    values = join(fill("?", length(schema)), ", ")
+function insert_query(table::String, col_names::Vector{Symbol})::String
+    num_columns = length(col_names)
+    columns = join(col_names, ", ")
+    values = join(fill("?", num_columns), ", ")
     return "INSERT INTO $table ($columns) VALUES ($values)"
-end # insert_query =#
-
+end
 end # module MySQLite
