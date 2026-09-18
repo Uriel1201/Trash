@@ -4,20 +4,17 @@ using hello_data_in_julia
 import hello_data_in_julia.DatabaseSetup.Schemas as sch
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 
+
 sql = "SELECT * FROM family"
 schema = sch.my_data_types("family")
-#=
-data = CSV.Rows(IOBuffer("alias,animal,cumpleaños 
-Margarita,dog,11-Jan-2018
-Uriel,human,12-Dic-1993
-Angel,human,06-Jan-2007"); header=1, types=[Int32,String,String], skipto=2)
-end # testset=#
+
 
 @testset "loading TOML schemas" begin
     @test haskey(sch.SCHEMAS_TOML, "family")
     @test schema isa Vector{Pair{Symbol, Type}}
     @test map(first, schema) == [:name, :gender, :birthday]
-    @test_throws ErrorException("Table 'perro_del_mal' not found in schemas.toml" sch.my_data_types("perro_del_mal"))
+    @test map(last, schema) == [String, String, String]
+    @test_throws ErrorException("Table 'perro_del_mal' not found in schemas.toml") sch.my_data_types("perro_del_mal")
 end # test_set
 
 
@@ -66,6 +63,11 @@ end # testset
     end
 end # testset
 
+
+data = CSV.Rows(IOBuffer("alias,animal,cumpleaños 
+Margarita,dog,11-Jan-2018
+Uriel,human,12-Dic-1993
+Angel,human,06-Jan-2007"); header=map(first, schema), types=map(last, schema), skipto=2, reusebuffer=true)
 #=
 @testset "loading a csv file to SQLite" begin
     dbs.get_conn() do conn
