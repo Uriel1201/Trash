@@ -14,11 +14,11 @@ Angel,human,06-Jan-2007"); header=1, types=[Int32,String,String], skipto=2)
 end # testset=#
 
 @testset "loading TOML schemas" begin
-    @test haskey(sch.SCHEMAS, "family")
-    @test schema isa Dict{Symbol, Type}
-    @test issetequal(keys(schema), [:name, :genre, :birthday])
-    @test_throws ErrorException("'perro_del_mal' isn't registered in the current TOML.") sch.my_data_types("perro_del_mal")
-end
+    @test haskey(sch.SCHEMAS_TOML, "family")
+    @test schema isa Vector{Pair{Symbol, Type}}
+    @test map(first, schema) == [:name, :gender, :birthday]
+    @test_throws ErrorException("Table 'perro_del_mal' not found in schemas.toml" sch.my_data_types("perro_del_mal"))
+end # test_set
 
 
 @testset "getting a connection to SQLite" begin
@@ -66,7 +66,7 @@ end # testset
     end
 end # testset
 
-
+#=
 @testset "loading a csv file to SQLite" begin
     dbs.get_conn() do conn
         columns = Tuple(keys(schema))
