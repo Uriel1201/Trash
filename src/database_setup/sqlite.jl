@@ -63,8 +63,8 @@ function csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
         insert = insert_query(schema)
         stmt = SQLite.Stmt(conn, insert)
         for batch in Iterators.partition(data, 2000)
-            table = Tables.columntable(batch)
-            ordered_cols = NamedTuple{columns}(table) 
+            column_table = Tables.columntable(batch)
+            ordered_cols = NamedTuple{columns}(column_table) 
             DBInterface.executemany(stmt, ordered_cols)
         end
     else
