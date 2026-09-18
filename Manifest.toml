@@ -516,7 +516,7 @@ uuid = "c4b69c83-5512-53e3-94e6-de98773c479f"
 version = "1.4.2+0"
 
 [[deps.hello_data_in_julia]]
-deps = ["Arrow", "CSV", "DBInterface", "DataFrames", "DotEnv", "JuliaFormatter", "SQLite", "Tables"]
+deps = ["Arrow", "CSV", "DBInterface", "DataFrames", "DotEnv", "JuliaFormatter", "SQLite", "TOML", "Tables"]
 path = "."
 uuid = "56430cd4-5d74-40e3-afde-876237f06769"
 version = "0.1.0"
