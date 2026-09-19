@@ -64,21 +64,18 @@ end # testset
 end # testset
 
 
-data = CSV.Rows(IOBuffer("alias,animal,cumpleaños 
+data = CSV.Rows(IOBuffer("alias,animal,cumpleaños
 Margarita,dog,11-Jan-2018
 Uriel,human,12-Dic-1993
-Angel,human,06-Jan-2007"); header=map(first, schema), types=map(last, schema), skipto=2, reusebuffer=true)
-#=
+Angel,human,06-Jan-2007"); header=map(first, schema), types=map(last, schema), skipto=2)
 @testset "loading a csv file to SQLite" begin
     dbs.get_conn() do conn
-        columns = Tuple(keys(schema))
-        vals = Tuple(values(schema))
-        SQLite.createtable!(conn, "family", Tables.Schema(columns, vals), temp = false)
-        dbs.print_sqlite(conn, "PRAGMA table_info(family)")
+        columns, data_types = zip(schema...)
+        SQLite.createtable!(conn, "family", Tables.Schema(columns, data_types), temp = false)
         @test ("family" in dbs.my_tables(conn))
-        println(dbs.insert_query("family")) # == "INSERT INTO family (name, genre, birthday) VALUES (?, ?, ?)"
-        #dbs.csv_to_sqlite(conn, "family", schema, data)
-        #df = dbs.sqlite_sample(conn, "SELECT * FROM family")
-        #@test df.name == ["Margarita", "Michi", "Pantaleon"]
+        @test dbs.insert_query("family", map(first, schema)) == "INSERT INTO family (name, gender, birthday) VALUES (?, ?, ?)"
+        dbs.csv_to_sqlite(conn, "family", data)
+        df = dbs.sqlite_sample(conn, "SELECT * FROM family")
+        @test df.name == ["Margarita", "Uriel", "Angel"]
     end
-end # testset =#
+end # testset
