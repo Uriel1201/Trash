@@ -6,4 +6,4 @@ FROM
     INFORMATION_SCHEMA.COLUMNS
 WHERE 
     TABLE_SCHEMA = 'defaultdb'
-    AND TABLE_NAME = 'USERS_01'
+    AND TABLE_NAME = '{table}'
