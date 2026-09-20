@@ -64,18 +64,22 @@ end # testset
 end # testset
 
 
+t_columns, t_data_types = zip(schema...)
+v_columns = map(first, schema)
+v_data_types = map(last, schema)
 data = CSV.Rows(IOBuffer("alias,animal,cumpleaños
 Margarita,dog,11-Jan-2018
 Uriel,human,12-Dic-1993
-Angel,human,06-Jan-2007"); header=map(first, schema), types=map(last, schema), skipto=2)
+Angel,human,06-Jan-2007"); header=v_columns, types=v_data_types, skipto=2)
+header = CSV.Header(data)
+show(typeof(header))
 @testset "loading a csv file to SQLite" begin
     dbs.get_conn() do conn
-        columns, data_types = zip(schema...)
         SQLite.createtable!(conn, "family", Tables.Schema(columns, data_types), temp = false)
         @test ("family" in dbs.my_tables(conn))
-        @test dbs.insert_query("family", map(first, schema)) == "INSERT INTO family (name, gender, birthday) VALUES (?, ?, ?)"
+        @test dbs.insert_query("family", v_columns) == "INSERT INTO family (name, gender, birthday) VALUES (?, ?, ?)"
         dbs.csv_to_sqlite(conn, "family", data)
         df = dbs.sqlite_sample(conn, "SELECT * FROM family")
         @test df.name == ["Margarita", "Uriel", "Angel"]
     end
-end # testset
+end # testset=#
