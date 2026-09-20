@@ -6,4 +6,4 @@ from
     information_schema.columns
 where
     table_schema = 'public'
-    and table_name = 'USERS_01'
+    and table_name = '{table}'
