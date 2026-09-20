@@ -15,7 +15,7 @@ function main(table::String, csv_file::String)
         )
         dbs.get_conn("hello_data", "rw") do conn
             dbs.csv_to_sqlite(conn, table, data)
-            dbs.print_sqlite(conn, "SELECT * FROM $table")
+            @info "$csv_path ingested"
         end
     else
         throw(ArgumentError("$csv_path not found in directory"))
