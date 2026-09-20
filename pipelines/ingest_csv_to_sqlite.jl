@@ -1,3 +1,5 @@
+module CSVtoSQLite
+
 using CSV
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 import hello_data_in_julia.DatabaseSetup.Schemas as sch
@@ -21,6 +23,8 @@ function main(table::String, csv_file::String)
         throw(ArgumentError("$csv_path not found in directory"))
     end
 end
+
+end # module CSVtoSQLite
 
 
 if Base.@isdefined(PROGRAM_FILE) && abspath(PROGRAM_FILE) == abspath(@__FILE__)
