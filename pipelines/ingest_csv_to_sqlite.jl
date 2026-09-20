@@ -10,12 +10,8 @@ function main(table::String, csv_file::String)
         schema = sch.my_data_types(table)
         data = CSV.Rows(csv_path; header=map(first, schema), types=map(last, schema), skipto=2)
         dbs.get_conn("hello_data", "rw") do conn
-            tables = dbs.my_tables(conn)
-            for table in tables
-                show(table)
-            end
-            #dbs.csv_to_sqlite(conn, table, data)
-            #dbs.print_sqlite(conn, "SELECT * FROM $table")
+            dbs.csv_to_sqlite(conn, table, data)
+            dbs.print_sqlite(conn, "SELECT * FROM $table")
         end
     else
         throw(ArgumentError("$csv_path not found in directory"))
