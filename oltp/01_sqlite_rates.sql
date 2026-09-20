@@ -1,38 +1,31 @@
-/* 
-01. Cancellation Rates.
-
-From the following table of user IDs,
-actions, and dates, write a query to
-return the publication and cancellation
-rate for each user. */
-
-/* SQLITE. */
-/********************************************************************/
 WITH
-    TOTALS AS (
-        SELECT
-            USER_ID,
-            1.0 * SUM(CASE 
-                          WHEN ACTION = "start" THEN 1 
-                          ELSE 0 
-                      END) AS TOTAL_STARTS,
-            1.0 * SUM(CASE 
-                          WHEN ACTION = "cancel" THEN 1 
-                          ELSE 0 
-                      END) AS TOTAL_CANCELS,
-            1.0 * SUM(CASE 
-                          WHEN ACTION = "publish" THEN 1 
-                          ELSE 0 
-                      END) AS TOTAL_PUBLISHES
+    users (user_id, action, action_date) AS (
+        SELECT 
+            user_id,
+            NULLIF(TRIM(action), ''),
+            action_date
         FROM
-            USERS_01
+            users_01
+    ),
+    totals (user_id, total_starts, total_cancels, total_publishes) AS (
+        SELECT 
+            users.user_id,
+            1.0 * SUM(1) FILTER(WHERE users.action = 'start'),
+            1.0 * COUNT(*) FILTER(WHERE users.action = 'cancel'),
+            1.0 * COUNT(*) FILTER(WHERE users.action = 'publish')
+        FROM
+            users
+        WHERE 
+            users.action <> 'NaN'
+            AND users.action_date IS NOT NULL
         GROUP BY
-            USER_ID)
-SELECT
-    USER_ID,
-    TOTAL_PUBLISHES / NULLIF(TOTAL_STARTS, 0) AS PUBLISH_RATE,
-    TOTAL_CANCELS / NULLIF(TOTAL_STARTS, 0) AS CANCEL_RATE
+            users.user_id
+    )
+SELECT 
+    totals.user_id,
+    ROUND(totals.total_publishes / totals.total_starts
+        ,2) as publish_rate,
+    round(totals.total_cancels / totals.total_starts
+        ,2) as cancel_rate
 FROM
-    TOTALS
-ORDER BY 
-    1;
+    totals
