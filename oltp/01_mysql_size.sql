@@ -1,4 +1,0 @@
-SELECT 
-    COUNT(*) AS SIZE
-FROM
-    USERS_01
