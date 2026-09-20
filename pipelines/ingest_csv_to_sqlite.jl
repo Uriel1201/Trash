@@ -1,24 +1,28 @@
 using Tables, SQLite, CSV
+using hello_data_in_julia
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
+import hello_data_in_julia.DatabaseSetup.Schemas as sch
 
 
-#table_name = ARGS[1]
-path = ARGS[1]
-db_path = joinpath(@__DIR__, ".." ,"data", "csv", path)
-if isdir(db_path)
-    source = joinpath.(db_path, filter(f -> endswith(f, ".csv"), readdir(db_path)))
-    data = CSV.File(source)
-elseif isfile(db_path)
-    data = CSV.File(db_path)
-else
-    throw(ArgumentError("The specified path is not a valid file or directory"))
+function main(table::String, csv_file::String)
+    csv_path = joinpath(@__DIR__, ".." ,"data", "csv", csv_file)
+    if isfile(csv_path)
+        schema = sch.my_data_types(table)
+        data = CSV.Rows(csv_path; header=map(first, schema), types=map(last, schema), skipto=2)
+        dbs.get_conn("hello_data", "rw") do conn
+            tables = dbs.my_tables(conn)
+            for table in tables
+                show(table)
+            end
+            #dbs.csv_to_sqlite(conn, table, data)
+            #dbs.print_sqlite(conn, "SELECT * FROM $table")
+        end
+    else
+        throw(ArgumentError("$csv_path not found in directory"))
+    end
 end
 
 
 if Base.@isdefined(PROGRAM_FILE) && abspath(PROGRAM_FILE) == abspath(@__FILE__)
-    println(db_path)
-    println("is file: $(isfile(db_path))")
-    println("is dir: $(isdir(db_path))")
-    println(data)
-    
+    main(ARGS[1], ARGS[2])
 end
