@@ -1,4 +1,4 @@
-using Tables, SQLite, CSV
+using CSV
 using hello_data_in_julia
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 import hello_data_in_julia.DatabaseSetup.Schemas as sch
