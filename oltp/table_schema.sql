@@ -1,2 +1,1 @@
-PRAGMA
-    table_info{table}
+PRAGMA table_info({table})
