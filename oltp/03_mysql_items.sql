@@ -1,5 +1,0 @@
-SELECT 
-    EVENT_ID,
-    ITEM
-FROM
-    ITEMS_03
