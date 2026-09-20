@@ -1,5 +1,0 @@
-SELECT 
-    ID, 
-    ACTION_DATE
-FROM
-    DATES_04
