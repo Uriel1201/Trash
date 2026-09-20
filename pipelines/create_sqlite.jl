@@ -1,5 +1,4 @@
 using Tables, SQLite
-using hello_data_in_julia
 import hello_data_in_julia.DatabaseSetup.Schemas as sch
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 
