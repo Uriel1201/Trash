@@ -12,7 +12,7 @@ function main(table::String)
         for t in TABLE_LIST
             println("  * $t")
         end
-        if !(table in TABLE_LIST)
+        if haskey(sch.SCHEMAS_TOML, table)
             schema = sch.my_data_types(table)
             columns = map(first, schema)
             d_types = map(last, schema)
@@ -20,14 +20,11 @@ function main(table::String)
             SQLite.createtable!(conn, table, Tables.Schema(columns, d_types), temp = false)
             @info "$table created"
             dbs.print_sqlite(conn, "PRAGMA table_info($table)")
-        
         else
-            @info "$table already exists"
-            dbs.print_sqlite(conn, "PRAGMA table_info($table)")
+            rethrow(ArgumentError("Table $table not defined in SCHEMAS_TOML"))
         end
     end
 end
-
 end #module CreateSQLite
 
 
