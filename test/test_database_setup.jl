@@ -5,7 +5,6 @@ import hello_data_in_julia.DatabaseSetup.Schemas as sch
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 
 
-sql = "SELECT * FROM family"
 schema = sch.my_data_types("family")
 
 
@@ -41,12 +40,15 @@ end # testset
             conn,
             "INSERT INTO family VALUES ('Margarita', 'dog', '11-Jan-2018'), ('Uriel', 'human', '01-Dic-93'), ('Angel', 'human', '06-06-2007')",
         )
+        @test_throws ErrorException(""Table perro_del_mal not found in $conn"") dbs.create_arrow(
+            conn,
+            "perro_del_mal",
+        )
+        dbs.create_arrow(conn, "family")
+        arrow_file = joinpath(@__DIR__, "..", "data", "arrow/family.arrow")
+        @test isfile(arrow_file)
 
-        dbs.sqlite_to_arrow(conn, sql, "test_output")
-
-        @test isfile("data/arrow/test_output.arrow")
-
-        tbl = Arrow.Table("data/arrow/test_output.arrow")
+        tbl = Arrow.Table(arrow_file)
         @test length(tbl.name) == 3
         @test collect(tbl.name) == ["Margarita", "Uriel", "Angel"]
         @test collect(tbl.genre) == ["dog", "human", "human"]
@@ -94,10 +96,16 @@ Angel,human,06-Jan-2007");
             Tables.Schema(columns, data_types),
             temp = false,
         )
-        @test ("family" in dbs.my_tables(conn))
+        @test "family" in dbs.my_tables(conn)
         @test dbs.insert_query("family", columns) ==
               "INSERT INTO family (name, gender, birthday) VALUES (?, ?, ?)"
-        dbs.csv_to_sqlite(conn, "family", data)
+        
+        @test_throws KeyError(table) dbs.ingest_csv(
+            conn,
+            "perro_del_mal",
+            data,
+        )
+        dbs.ingest_csv(conn, "family", data)
         df = dbs.sqlite_sample(conn, "SELECT * FROM family")
         @test df.name == ["Margarita", "Uriel", "Angel"]
     end
