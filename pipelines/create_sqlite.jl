@@ -21,7 +21,7 @@ function main(table::String)
             @info "$table created"
             dbs.print_sqlite(conn, "PRAGMA table_info($table)")
         else
-            rethrow(ArgumentError("Table $table not defined in SCHEMAS_TOML"))
+            throw(KeyError(table))
         end
     end
 end
