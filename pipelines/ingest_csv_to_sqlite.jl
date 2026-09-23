@@ -1,4 +1,4 @@
-module CSVtoSQLite
+module CSVLite
 
 using CSV
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
@@ -24,7 +24,7 @@ function main(table::String, csv_file::String)
     end
 end
 
-end # module CSVtoSQLite
+end # module CSVLite
 
 
 if Base.@isdefined(PROGRAM_FILE) && abspath(PROGRAM_FILE) == abspath(@__FILE__)
