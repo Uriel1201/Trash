@@ -16,7 +16,7 @@ function main(table::String, query_file::String)
     end
 end
 
-end # module QuerySQLite
+end # module QueryingSQLite
 
 
 if Base.@isdefined(PROGRAM_FILE) && abspath(PROGRAM_FILE) == abspath(@__FILE__)
