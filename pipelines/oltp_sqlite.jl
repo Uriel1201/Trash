@@ -1,4 +1,4 @@
-module OSQLite
+module OLite
 
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 import hello_data_in_julia.DatabaseSetup.Schemas as sch
@@ -16,11 +16,9 @@ function main(table::String, query_file::String)
     end
 end
 
-end # module OSQLite
+end # module OLite
 
 
 if Base.@isdefined(PROGRAM_FILE) && abspath(PROGRAM_FILE) == abspath(@__FILE__)
     main(ARGS[1], ARGS[2])
 end
-
-
