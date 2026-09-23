@@ -100,7 +100,7 @@ Angel,human,06-Jan-2007");
         @test dbs.insert_query("family", columns) ==
               "INSERT INTO family (name, gender, birthday) VALUES (?, ?, ?)"
         
-        @test_throws KeyError(table) dbs.ingest_csv(
+        @test_throws KeyError dbs.ingest_csv(
             conn,
             "perro_del_mal",
             data,
