@@ -18,7 +18,7 @@ function main(table::String)
             d_types = map(last, schema)
     
             SQLite.createtable!(conn, table, Tables.Schema(columns, d_types), temp = false)
-            @info "$table created"
+            println("\n***$table created***")
             dbs.print_sqlite(conn, "PRAGMA table_info($table)")
         else
             throw(KeyError(table))
