@@ -26,38 +26,31 @@ end # get_conn
 
 
 """
-    sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)
+    create_arrow(conn::SQLite.DB, table::String) -> Nothing 
 """
-function sqlite_to_arrow(conn::SQLite.DB, query::String, output_file::String)::Nothing
-    file_path = joinpath("data/arrow", "$output_file.arrow")
-    result = DBInterface.execute(conn, query)
-    open(Arrow.Writer, file_path) do writer
-        batch = NamedTuple[]
-        for row in result
-            push!(batch, NamedTuple(row))
-
-            if length(batch) == 10000
-                table = Tables.columntable(batch)
-                Arrow.write(writer, table)
-
-                batch = NamedTuple[]
+function create_arrow(conn::SQLite.DB, table::String)::Nothing
+    arrow_path = joinpath(@__DIR__, "..", "..", "data", "arrow", "$table.arrow")
+    query_file = joinpath(@__DIR__, "..", "..", "oltp", "table.sql")
+    sql = replace(read(query_file, String), "{table}" => table)
+    if table in my_tables(conn)
+        result = DBInterface.execute(conn, sql)
+        open(Arrow.Writer, arrow_path) do writer
+            for batch in Iterators.partition(result, 10000)
+                Arrow.write(writer, batch)
             end
         end
-
-        if !isempty(batch)
-            table = Tables.columntable(batch)
-            Arrow.write(writer, table)
-        end
+    else
+        throw(Error("Table $table not found in $conn"))
     end
     nothing
-end #sqlite_to_arrow
+end # create_arrow
 
 
 """
-    csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows) -> Nothing 
+    ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows) -> Nothing 
 """
-function csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
-    if (table in my_tables(conn))
+function ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
+    if haskey(Schemas.SCHEMAS_TOML, table)
         columns = map(first, Schemas.my_data_types(table))
         insert = insert_query(table, columns)
         stmt = SQLite.Stmt(conn, insert)
@@ -66,7 +59,7 @@ function csv_to_sqlite(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
             DBInterface.executemany(stmt, column_table)
         end
     else
-        throw(ArgumentError("$table does not exist"))
+        throw(KeyError(table))
     end
     nothing 
 end # csv_to_sqlite
