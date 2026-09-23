@@ -1,4 +1,4 @@
-module ESQLite
+module ExtractSQLite
 
 import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 
@@ -19,4 +19,4 @@ if Base.@isdefined(PROGRAM_FILE) && abspath(PROGRAM_FILE) == abspath(@__FILE__)
     main(ARGS[1], ARGS[2])
 end
 
-end # module ESQLite
+end # module ExtractSQLite
