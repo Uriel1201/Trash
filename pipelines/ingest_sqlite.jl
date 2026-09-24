@@ -3,7 +3,7 @@ import hello_data_in_julia.DatabaseSetup.MySQLite as dbs
 import hello_data_in_julia.DatabaseSetup.Schemas as sch
 
 
-function csv_to_sqlite(table::String, csv_file::String)
+function ingest_sqlite(table::String, csv_file::String)
     csv_path = joinpath(@__DIR__, "..", "data", "csv", csv_file)
     if isfile(csv_path)
         schema = sch.my_data_types(table)
@@ -24,5 +24,5 @@ end # csv_to_sqlite
 
 
 if Base.@isdefined(PROGRAM_FILE) && abspath(PROGRAM_FILE) == abspath(@__FILE__)
-    csv_to_sqlite(ARGS[1], ARGS[2])
+    ingest_sqlite(ARGS[1], ARGS[2])
 end
