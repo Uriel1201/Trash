@@ -32,7 +32,7 @@ function create_arrow(conn::SQLite.DB, table::String)::Nothing
     arrow_path = joinpath(@__DIR__, "..", "..", "data", "arrow", "$table.arrow")
     query_file = joinpath(@__DIR__, "..", "..", "oltp", "table.sql")
     sql = replace(read(query_file, String), "{table}" => table)
-    if table in dbs.my_tables(conn)
+    if table in my_tables(conn)
         result = DBInterface.execute(conn, sql)
         values = NamedTuple[]
         open(Arrow.Writer, arrow_path) do writer
