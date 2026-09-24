@@ -1,6 +1,6 @@
 module Schemas
 
-using TOML
+using TOML, Decimals
 
 export my_data_types, SCHEMAS_TOML
 
