@@ -26,14 +26,12 @@ end # get_conn
 
 
 """
-    create_arrow(conn::SQLite.DB, table::String) -> Nothing 
+    create_arrow(conn::SQLite.DB, query::String, output_name::String) -> Nothing 
 """
-function create_arrow(conn::SQLite.DB, table::String)::Nothing
-    arrow_path = joinpath(@__DIR__, "..", "..", "data", "arrow", "$table.arrow")
-    query_file = joinpath(@__DIR__, "..", "..", "oltp", "table.sql")
-    sql = replace(read(query_file, String), "{table}" => table)
+function create_arrow(conn::SQLite.DB, query::String, output_name::String)::Nothing
+    arrow_path = joinpath(@__DIR__, "..", "..", "data", "arrow", "$output_name.arrow")
     if table in my_tables(conn)
-        result = DBInterface.execute(conn, sql)
+        result = DBInterface.execute(conn, query)
         values = NamedTuple[]
         open(Arrow.Writer, arrow_path) do writer
             for row in result
@@ -55,11 +53,10 @@ end # create_arrow
 
 
 """
-    ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows) -> Nothing 
+    ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows, columns::Vector{Symbol}) -> Nothing 
 """
-function ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
+function ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows, columns::Vector{Symbol})::Nothing
     if haskey(Schemas.SCHEMAS_TOML, table)
-        columns = map(first, Schemas.my_data_types(table))
         insert = insert_query(table, columns)
         stmt = SQLite.Stmt(conn, insert)
         for batch in Iterators.partition(data, 2000)
