@@ -42,7 +42,7 @@ end # testset
         )
         @test_throws SQLiteException dbs.create_arrow(
             conn,
-            "SELECT* FROM perro_del_mal",
+            "SELECT * FROM perro_del_mal",
             "perro_del_mal"
         )
         dbs.create_arrow(conn, "SELECT * FROM family WHERE name = 'Margarita'", "family")
@@ -50,7 +50,7 @@ end # testset
         @test isfile(arrow_file)
 
         tbl = Arrow.Table(arrow_file)
-        @test length(tbl.name) == 3
+        @test length(tbl.name) == 1
         @test collect(tbl.name) == ["Margarita"]
         @test collect(tbl.genre) == ["dog"]
     end
@@ -108,3 +108,5 @@ Angel,human,06-Jan-2007");
         @test df.name == ["Margarita", "Uriel", "Angel"]
     end
 end # testset
+
+
