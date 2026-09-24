@@ -39,7 +39,7 @@ type = "Union{Int64, Missing}"
 
 [[transactions_02.columns]]
 name = "amount"
-type = "Union{Float64, Missing}"
+type = "Union{Decimals.Decimal, Missing}"
 
 [[transactions_02.columns]]
 name = "transaction_date"
