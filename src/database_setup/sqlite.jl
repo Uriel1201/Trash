@@ -40,7 +40,7 @@ function create_arrow(conn::SQLite.DB, table::String)::Nothing
             end
         end
     else
-        throw(Error("Table $table not found in $conn"))
+        throw(ErrorException("Table $table not found in $conn"))
     end
     nothing
 end # create_arrow
