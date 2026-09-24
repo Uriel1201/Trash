@@ -40,7 +40,7 @@ end # testset
             conn,
             "INSERT INTO family VALUES ('Margarita', 'dog', '11-Jan-2018'), ('Uriel', 'human', '01-Dic-93'), ('Angel', 'human', '06-06-2007')",
         )
-        @test_throws ErrorException(""Table perro_del_mal not found in $conn"") dbs.create_arrow(
+        @test_throws ErrorException("Table perro_del_mal not found in $conn") dbs.create_arrow(
             conn,
             "perro_del_mal",
         )
@@ -54,7 +54,7 @@ end # testset
         @test collect(tbl.genre) == ["dog", "human", "human"]
     end
 
-    rm("data/arrow/test_output.arrow"; force = true)
+    rm("data/arrow/family.arrow"; force = true)
 end # testset
 
 
@@ -99,12 +99,8 @@ Angel,human,06-Jan-2007");
         @test "family" in dbs.my_tables(conn)
         @test dbs.insert_query("family", columns) ==
               "INSERT INTO family (name, gender, birthday) VALUES (?, ?, ?)"
-        
-        @test_throws KeyError dbs.ingest_csv(
-            conn,
-            "perro_del_mal",
-            data,
-        )
+
+        @test_throws KeyError dbs.ingest_csv(conn, "perro_del_mal", data)
         dbs.ingest_csv(conn, "family", data)
         df = dbs.sqlite_sample(conn, "SELECT * FROM family")
         @test df.name == ["Margarita", "Uriel", "Angel"]
