@@ -19,7 +19,6 @@ function ingest_sqlite(table::String, csv_file::String)
             dbs.ingest_csv(conn, table, data, columns)
             println("***csv file $csv_path ingested***")
         end
-        show(data)
     else
         throw(ErrorException("File $csv_path not found in directory"))
     end
@@ -29,5 +28,3 @@ end # csv_to_sqlite
 if Base.@isdefined(PROGRAM_FILE) && abspath(PROGRAM_FILE) == abspath(@__FILE__)
     ingest_sqlite(ARGS[1], ARGS[2])
 end
-
-
