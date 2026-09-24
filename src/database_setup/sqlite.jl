@@ -67,7 +67,7 @@ function ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
                 DBInterface.executemany(stmt, column_table)
             end
         catch e 
-            @error "unable to execute query $insert"
+            @error "unable to execute ingestion"
             rethrow(e)
         end
     else
