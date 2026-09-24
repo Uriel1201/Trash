@@ -69,7 +69,7 @@ function ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
     else
         throw(KeyError(table))
     end
-    nothing 
+    nothing
 end # csv_to_sqlite
 
 
