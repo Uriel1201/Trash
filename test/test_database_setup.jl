@@ -81,7 +81,7 @@ end # testset
 columns = map(first, schema)
 data_types = map(last, schema)
 data = CSV.Rows(
-    IOBuffer("alias,animal,cumpleaños
+    IOBuffer("apodo_genial,especie_extraterrestre,cumpleaños
 Margarita,dog,11-Jan-2018
 Uriel,human,12-Dic-1993
 Angel,human,06-Jan-2007");
@@ -100,13 +100,9 @@ Angel,human,06-Jan-2007");
         @test "family" in dbs.my_tables(conn)
         @test dbs.insert_query("family", columns) ==
               "INSERT INTO family (name, gender, birthday) VALUES (?, ?, ?)"
-
-        @test_throws KeyError dbs.ingest_csv(conn, "perro_del_mal", data)
-        @test_throws SQLiteException dbs.ingest_csv(conn, "transactions_02", data)
-        dbs.ingest_csv(conn, "family", data)
+        @test_throws SQLiteException dbs.ingest_csv(conn, "transactions_02", data, columns)
+        dbs.ingest_csv(conn, "family", data, columns)
         df = dbs.sqlite_sample(conn, "SELECT * FROM family")
         @test df.name == ["Margarita", "Uriel", "Angel"]
     end
 end # testset
-
-
