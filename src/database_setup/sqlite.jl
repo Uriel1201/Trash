@@ -30,7 +30,7 @@ end # get_conn
 """
 function create_arrow(conn::SQLite.DB, query::String, output_name::String)::Nothing
     arrow_path = joinpath(@__DIR__, "..", "..", "data", "arrow", "$output_name.arrow")
-    if table in my_tables(conn)
+    try
         result = DBInterface.execute(conn, query)
         values = NamedTuple[]
         open(Arrow.Writer, arrow_path) do writer
@@ -45,8 +45,9 @@ function create_arrow(conn::SQLite.DB, query::String, output_name::String)::Noth
                 Arrow.write(writer, values)
             end
         end
-    else
-        throw(ErrorException("Table $table not found in $conn"))
+    catch e 
+        @error "unable to execute query $query"
+        rethrow(e)
     end
     nothing
 end # create_arrow
