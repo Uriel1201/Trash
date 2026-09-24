@@ -7,18 +7,19 @@ function ingest_sqlite(table::String, csv_file::String)
     csv_path = joinpath(@__DIR__, "..", "data", "csv", csv_file)
     if isfile(csv_path)
         schema = sch.my_data_types(table)
+        columns = map(first, schema)
         data = CSV.Rows(
             csv_path;
-            header = map(first, schema),
+            header = columns,
             types = map(last, schema),
             skipto = 2,
         )
         dbs.get_conn("hello_data", "rw") do conn
-            dbs.ingest_csv(conn, table, data)
+            dbs.ingest_csv(conn, table, data, columns)
             println("***csv file $csv_path ingested***")
         end
     else
-        throw(ArgumentError("File $csv_path not found in directory"))
+        throw(ErrorException("File $csv_path not found in directory"))
     end
 end # csv_to_sqlite
 
