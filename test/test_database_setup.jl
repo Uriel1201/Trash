@@ -102,6 +102,7 @@ Angel,human,06-Jan-2007");
               "INSERT INTO family (name, gender, birthday) VALUES (?, ?, ?)"
 
         @test_throws KeyError dbs.ingest_csv(conn, "perro_del_mal", data, columns)
+        @test_throws SQLiteException dbs.ingest_csv(conn, "family", data, [:hurt, :age, :action])
         dbs.ingest_csv(conn, "family", data, columns)
         df = dbs.sqlite_sample(conn, "SELECT * FROM family")
         @test df.name == ["Margarita", "Uriel", "Angel"]
