@@ -2,7 +2,7 @@
 
 julia_version = "1.12.6"
 manifest_format = "2.0"
-project_hash = "5db74b5db456d642b8a8156b11e4993b118fd5c4"
+project_hash = "12cc256643da90a037ab3b0d68b167e6763b0f6b"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -620,7 +620,7 @@ uuid = "c4b69c83-5512-53e3-94e6-de98773c479f"
 version = "1.4.2+0"
 
 [[deps.hello_data_in_julia]]
-deps = ["Arrow", "CSV", "DBInterface", "DataFrames", "DotEnv", "JuliaFormatter", "SQLite", "TOML", "Tables"]
+deps = ["Arrow", "CSV", "DBInterface", "DataFrames", "DotEnv", "JuliaFormatter", "LibPQ", "SQLite", "TOML", "Tables"]
 path = "."
 uuid = "56430cd4-5d74-40e3-afde-876237f06769"
 version = "0.1.0"
