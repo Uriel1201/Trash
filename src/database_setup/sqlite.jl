@@ -54,24 +54,19 @@ end # create_arrow
 
 
 """
-    ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows) -> Nothing 
+    ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows, columns::Vector{Symbol}) -> Nothing 
 """
-function ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
-    if haskey(Schemas.SCHEMAS_TOML, table)
-        columns = map(first, Schemas.my_data_types(table))
-        insert = insert_query(table, columns)
-        try
-            stmt = SQLite.Stmt(conn, insert)
-            for batch in Iterators.partition(data, 2000)
-                column_table = Tables.columntable(batch)
-                DBInterface.executemany(stmt, column_table)
-            end
-        catch e 
-            @error "unable to execute ingestion"
-            rethrow(e)
+function ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows, columns::Vector{Symbol})::Nothing
+    insert = insert_query(table, columns)
+    try
+        stmt = SQLite.Stmt(conn, insert)
+        for batch in Iterators.partition(data, 2000)
+            column_table = Tables.columntable(batch)
+            DBInterface.executemany(stmt, column_table)
         end
-    else
-        throw(KeyError(table))
+    catch e 
+        @error "unable to execute ingestion"
+        rethrow(e)
     end
     nothing
 end # csv_to_sqlite
