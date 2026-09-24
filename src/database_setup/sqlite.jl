@@ -59,10 +59,15 @@ end # create_arrow
 function ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows, columns::Vector{Symbol})::Nothing
     if haskey(Schemas.SCHEMAS_TOML, table)
         insert = insert_query(table, columns)
-        stmt = SQLite.Stmt(conn, insert)
-        for batch in Iterators.partition(data, 2000)
-            column_table = Tables.columntable(batch)
-            DBInterface.executemany(stmt, column_table)
+        try
+            stmt = SQLite.Stmt(conn, insert)
+            for batch in Iterators.partition(data, 2000)
+                column_table = Tables.columntable(batch)
+                DBInterface.executemany(stmt, column_table)
+            end
+        catch e 
+            @error "unable to execute query $insert"
+            rethrow(e)
         end
     else
         throw(KeyError(table))
