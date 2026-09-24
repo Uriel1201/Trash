@@ -26,5 +26,3 @@ end # csv_to_sqlite
 if Base.@isdefined(PROGRAM_FILE) && abspath(PROGRAM_FILE) == abspath(@__FILE__)
     csv_to_sqlite(ARGS[1], ARGS[2])
 end
-
-
