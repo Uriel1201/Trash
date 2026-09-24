@@ -103,8 +103,10 @@ Angel,human,06-Jan-2007");
 
         @test_throws KeyError dbs.ingest_csv(conn, "perro_del_mal", data)
         @test_throws SQLiteException dbs.ingest_csv(conn, "transactions_02", data)
-        dbs.ingest_csv(conn, "family", data, columns)
+        dbs.ingest_csv(conn, "family", data)
         df = dbs.sqlite_sample(conn, "SELECT * FROM family")
         @test df.name == ["Margarita", "Uriel", "Angel"]
     end
 end # testset
+
+
