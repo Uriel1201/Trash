@@ -49,20 +49,30 @@ end # create_arrow
 """
     ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows) -> Nothing 
 """
-function ingest_csv(conn::SQLite.DB, table::String, data::CSV.Rows)::Nothing
-    if haskey(Schemas.SCHEMAS_TOML, table)
-        columns = map(first, Schemas.my_data_types(table))
-        insert = insert_query(table, columns)
-        stmt = SQLite.Stmt(conn, insert)
-        for batch in Iterators.partition(data, 2000)
-            column_table = Tables.columntable(batch)
-            DBInterface.executemany(stmt, column_table)
+function create_arrow(conn::SQLite.DB, table::String)::Nothing
+    arrow_path = joinpath(@__DIR__, "data", "arrow", "$table.arrow")
+    query_file = joinpath(@__DIR__, "oltp", "table.sql")
+    sql = replace(read(query_file, String), "{table}" => table)
+    if table in dbs.my_tables(conn)
+        result = DBInterface.execute(conn, sql)
+        values = NamedTuple[]
+        open(Arrow.Writer, arrow_path) do writer
+            for row in result
+                push!(values, NamedTuple(row))
+                if length(values) == 10000
+                    Arrow.write(writer, values)
+                    values = NamedTuple[]
+                end
+            end
+            if !isempty(values)
+                Arrow.write(writer, values)
+            end
         end
     else
-        throw(KeyError(table))
+        throw(ErrorException("Table $table not found in $conn"))
     end
-    nothing 
-end # csv_to_sqlite
+    nothing
+end # create_arrow
 
 
 """
