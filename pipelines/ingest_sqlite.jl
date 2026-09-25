@@ -16,8 +16,8 @@ function ingest_sqlite(table::String, csv_file::String)
                 skipto = 2,
             )
         catch e
-            @error "Unable to parse CSV file"
-            rethrow(e)
+            @error "Unable to parse CSV file" csv_path exception=(e, catch_backtrace())
+            rethrow()
         end
 
         dbs.get_conn("hello_data", "rw") do conn
