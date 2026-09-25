@@ -5,7 +5,7 @@ import hello_data_in_julia.DatabaseSetup.Schemas as sch
 
 function ingest_sqlite(table::String, csv_file::String)
     csv_path = joinpath(@__DIR__, "..", "data", "csv", csv_file)
-    #=
+    
     if isfile(csv_path)
         schema = sch.my_data_types(table)
         columns = map(first, schema)
@@ -28,7 +28,7 @@ function ingest_sqlite(table::String, csv_file::String)
     else
         throw(ErrorException("File $csv_path not found in directory"))
     end
-end # csv_to_sqlite=#
+end # csv_to_sqlite
 
 
 if Base.@isdefined(PROGRAM_FILE) && abspath(PROGRAM_FILE) == abspath(@__FILE__)
