@@ -10,11 +10,11 @@ function ingest_sqlite(table::String, csv_file::String)
         columns = map(first, schema)
         
         data = CSV.Rows(
-                csv_path;
-                header = columns,
-                types = map(last, schema),
-                skipto = 2,
-            )
+            csv_path;
+            header = columns,
+            types = map(last, schema),
+            skipto = 2,
+        )
 
         dbs.get_conn("hello_data", "rw") do conn
             dbs.ingest_csv(conn, table, data, columns)
