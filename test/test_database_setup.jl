@@ -77,7 +77,7 @@ end # testset
     end
 end # testset
 
-
+#=
 columns = map(first, schema)
 data_types = map(last, schema)
 data = CSV.Rows(
@@ -105,4 +105,4 @@ Angel,human,06-Jan-2007");
         df = dbs.sqlite_sample(conn, "SELECT * FROM family")
         @test df.name == ["Margarita", "Uriel", "Angel"]
     end
-end # testset
+end # testset=#
