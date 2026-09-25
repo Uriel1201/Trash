@@ -8,17 +8,13 @@ function ingest_sqlite(table::String, csv_file::String)
     if isfile(csv_path)
         schema = sch.my_data_types(table)
         columns = map(first, schema)
-        try
-            data = CSV.Rows(
+        
+        data = CSV.Rows(
                 csv_path;
                 header = columns,
                 types = map(last, schema),
                 skipto = 2,
             )
-        catch e
-            @error "Unable to parse CSV file"
-            rethrow(e)
-        end
 
         dbs.get_conn("hello_data", "rw") do conn
             dbs.ingest_csv(conn, table, data, columns)
