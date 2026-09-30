@@ -1,0 +1,9 @@
+[patitos_bebes]
+description = ""
+
+    [[patitos_bebes.columns]]
+    name = "id"
+    type = "Int64"
+    [[patitos_bebes.columns]]
+    name = "product"
+    type = "Int64"
