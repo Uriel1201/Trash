@@ -1,0 +1,4 @@
+TEXT1 = "Union{String, Missing}"
+INT0 = "Int64"
+INT1 = "Union{Int64, Missing}"
+TEXT0 = "String"
